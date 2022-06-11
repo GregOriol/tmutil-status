@@ -1,0 +1,14 @@
+# System, IDE, ...
+.DS_Store
+.idea
+.vagrant
+.bundle
+
+# Project cache files
+cache/*
+
+# Project generated files
+node_modules
+vendor
+!docs/node_modules
+index.html
