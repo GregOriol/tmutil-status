@@ -10,6 +10,13 @@ This script parses that non-user-friendly output and displays it nicely, so a st
 # How
 Processing code is in php 7.1+. It runs a check every 10s when a backup is running and display the new status.
 
+This script doesn't depend on any other script/vendor/...
+
+# Running it
+```
+php tmutil-status.php
+```
+
 # NB
 It should be easy to convert this script to any other scripting language (node, ...), since we first convert the output from `tmutil` into json, then make the display of the data.
 
