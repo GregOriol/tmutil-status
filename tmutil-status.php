@@ -118,10 +118,18 @@ while (true) {
 
 	switch ($status['BackupPhase']) {
 		case 'FindingChanges':
-			$pc = round(floatval($status['FractionDone']) * 100, 2);
-			$changedItemCount = intval($status['ChangedItemCount']);
+			if (array_key_exists('FractionDone', $status)) {
+				$pc = round(floatval($status['FractionDone']) * 100, 2);
+			} else {
+				$pc = 0;
+			}
+			if (array_key_exists('ChangedItemCount', $status)) {
+				$changedItemCount = intval($status['ChangedItemCount']);
+			} else {
+				$changedItemCount = 0;
+			}
 
-			$progress = '  '.float_pad($pc).'% ('.$ChangedItemCount.' items)';
+			$progress = '  '.float_pad($pc).'% ('.$changedItemCount.' items)';
 			if ($lastProgress !== $progress) {
 				echo $progress.PHP_EOL;
 			}
