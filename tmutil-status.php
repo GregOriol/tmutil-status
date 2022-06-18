@@ -143,7 +143,11 @@ while (true) {
 			$totalFiles = intval($status['Progress']['totalFiles']);
 			$bytes = intval($status['Progress']['bytes']);
 			$totalBytes = intval($status['Progress']['totalBytes']);
-			$timeRemaining = round(floatval($status['Progress']['TimeRemaining']), 0);
+			if (array_key_exists('TimeRemaining', $status['Progress'])) {
+				$timeRemaining = round(floatval($status['Progress']['TimeRemaining']), 0);
+			} else {
+				$timeRemaining = null;
+			}
 
 			$progress = '  '.float_pad($pc).'% ('.$files.' files | '.formatBytes($bytes).' | '.formatDuration($timeRemaining).')';
 			if ($lastProgress !== $progress) {
