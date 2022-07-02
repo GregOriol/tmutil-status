@@ -102,6 +102,9 @@ while (true) {
 
 	if ($lastPhase !== $status['BackupPhase']) {
 		switch ($status['BackupPhase']) {
+			case 'MountingBackupVol':
+				echo '# Mounting backup volume'.PHP_EOL;
+				break;
 			case 'FindingChanges':
 				echo '# Finding changes'.PHP_EOL;
 				break;
@@ -155,6 +158,8 @@ while (true) {
 			}
 			$lastProgress = $progress;
 
+			break;
+		case 'MountingBackupVol':
 			break;
 		default:
 			var_dump($status);
