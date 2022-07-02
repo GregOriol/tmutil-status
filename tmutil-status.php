@@ -114,12 +114,17 @@ while (true) {
 			case 'ThinningPostBackup':
 				echo '# Thinning'.PHP_EOL;
 				break;
+			case 'Finishing':
+				echo '# Finishing'.PHP_EOL;
+				break;
 		}
 
 		$lastPhase = $status['BackupPhase'];
 	}
 
 	switch ($status['BackupPhase']) {
+		case 'MountingBackupVol':
+			break;
 		case 'FindingChanges':
 			if (array_key_exists('FractionDone', $status)) {
 				$pc = round(floatval($status['FractionDone']) * 100, 2);
@@ -141,6 +146,7 @@ while (true) {
 			break;
 		case 'Copying':
 		case 'ThinningPostBackup':
+		case 'Finishing':
 			$pc = round(floatval($status['Progress']['Percent']) * 100, 2);
 			$files = intval($status['Progress']['files']);
 			$totalFiles = intval($status['Progress']['totalFiles']);
@@ -158,8 +164,6 @@ while (true) {
 			}
 			$lastProgress = $progress;
 
-			break;
-		case 'MountingBackupVol':
 			break;
 		default:
 			var_dump($status);
