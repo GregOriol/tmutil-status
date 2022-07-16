@@ -2,7 +2,7 @@
 
 set_time_limit(0);
 
-$first = true;
+$destination = false;
 $lastPhase = null;
 $lastPc = null;
 $lastProgress = null;
@@ -93,15 +93,18 @@ while (true) {
 		exit();
 	}
 
-	if ($first) {
+	if ($destination == false && array_key_exists('DestinationMountPoint', $status)) {
 		echo 'Backup running on: '.$status['DestinationMountPoint'].PHP_EOL;
 		echo PHP_EOL;
 
-		$first = false;
+		$destination = $status['DestinationMountPoint'];
 	}
 
 	if ($lastPhase !== $status['BackupPhase']) {
 		switch ($status['BackupPhase']) {
+			case 'PreparingSourceVolumes':
+				echo '# Preparing source volume'.PHP_EOL;
+				break;
 			case 'MountingBackupVol':
 				echo '# Mounting backup volume'.PHP_EOL;
 				break;
@@ -123,6 +126,7 @@ while (true) {
 	}
 
 	switch ($status['BackupPhase']) {
+		case 'PreparingSourceVolumes':
 		case 'MountingBackupVol':
 			break;
 		case 'FindingChanges':
