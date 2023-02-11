@@ -84,7 +84,7 @@ while (true) {
 		echo 'Backup not running'.PHP_EOL;
 		echo PHP_EOL;
 
-		exec('tmutil listbackups | tail -n 1', $lastBackup);
+		exec('tmutil listbackups -t | tail -n 1', $lastBackup);
 		if (count($lastBackup) === 1) {
 			$lastBackup = str_replace('.backup', '', $lastBackup[0]);
 			echo 'Last backup: '.$lastBackup.PHP_EOL;
@@ -125,52 +125,55 @@ while (true) {
 		$lastPhase = $status['BackupPhase'];
 	}
 
-	switch ($status['BackupPhase']) {
-		case 'PreparingSourceVolumes':
-		case 'MountingBackupVol':
-			break;
-		case 'FindingChanges':
-			if (array_key_exists('FractionDone', $status)) {
-				$pc = round(floatval($status['FractionDone']) * 100, 2);
-			} else {
-				$pc = 0;
-			}
-			if (array_key_exists('ChangedItemCount', $status)) {
-				$changedItemCount = intval($status['ChangedItemCount']);
-			} else {
-				$changedItemCount = 0;
-			}
+	if (array_key_exists('BackupPhase', $status)) {
+		switch ($status['BackupPhase']) {
+			case 'PreparingSourceVolumes':
+			case 'MountingBackupVol':
+				break;
+			case 'FindingChanges':
+				if (array_key_exists('FractionDone', $status)) {
+					$pc = round(floatval($status['FractionDone']) * 100, 2);
+				} else {
+					$pc = 0;
+				}
+				if (array_key_exists('ChangedItemCount', $status)) {
+					$changedItemCount = intval($status['ChangedItemCount']);
+				} else {
+					$changedItemCount = 0;
+				}
 
-			$progress = '  '.float_pad($pc).'% ('.$changedItemCount.' items)';
-			if ($lastProgress !== $progress) {
-				echo $progress.PHP_EOL;
-			}
-			$lastProgress = $progress;
+				$progress = '  '.float_pad($pc).'% ('.$changedItemCount.' items)';
+				if ($lastProgress !== $progress) {
+					echo $progress.PHP_EOL;
+				}
+				$lastProgress = $progress;
 
-			break;
-		case 'Copying':
-		case 'ThinningPostBackup':
-		case 'Finishing':
-			$pc = round(floatval($status['Progress']['Percent']) * 100, 2);
-			$files = intval($status['Progress']['files']);
-			$totalFiles = intval($status['Progress']['totalFiles']);
-			$bytes = intval($status['Progress']['bytes']);
-			$totalBytes = intval($status['Progress']['totalBytes']);
-			if (array_key_exists('TimeRemaining', $status['Progress'])) {
-				$timeRemaining = round(floatval($status['Progress']['TimeRemaining']), 0);
-			} else {
-				$timeRemaining = null;
-			}
+				break;
+			case 'Copying':
+				$pc = round(floatval($status['Progress']['Percent']) * 100, 2);
+				$files = intval($status['Progress']['files']);
+				$totalFiles = intval($status['Progress']['totalFiles']);
+				$bytes = intval($status['Progress']['bytes']);
+				$totalBytes = intval($status['Progress']['totalBytes']);
+				if (array_key_exists('TimeRemaining', $status['Progress'])) {
+					$timeRemaining = round(floatval($status['Progress']['TimeRemaining']), 0);
+				} else {
+					$timeRemaining = null;
+				}
 
-			$progress = '  '.float_pad($pc).'% ('.$files.' files | '.formatBytes($bytes).' | '.formatDuration($timeRemaining).')';
-			if ($lastProgress !== $progress) {
-				echo $progress.PHP_EOL;
-			}
-			$lastProgress = $progress;
+				$progress = '  '.float_pad($pc).'% ('.$files.' files | '.formatBytes($bytes).' | '.formatDuration($timeRemaining).')';
+				if ($lastProgress !== $progress) {
+					echo $progress.PHP_EOL;
+				}
+				$lastProgress = $progress;
 
-			break;
-		default:
-			var_dump($status);
+				break;
+			case 'ThinningPostBackup':
+			case 'Finishing':
+				break;
+			default:
+				var_dump($status);
+		}
 	}
 
 	sleep(10);
