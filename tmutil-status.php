@@ -120,6 +120,9 @@ while (true) {
 			case 'Finishing':
 				echo '# Finishing'.PHP_EOL;
 				break;
+			case 'Stopping':
+				echo '# Stopping'.PHP_EOL;
+				break;
 		}
 
 		$lastPhase = $status['BackupPhase'];
@@ -170,6 +173,7 @@ while (true) {
 				break;
 			case 'ThinningPostBackup':
 			case 'Finishing':
+			case 'Stopping':
 				break;
 			default:
 				var_dump($status);
