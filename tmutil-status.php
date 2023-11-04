@@ -102,6 +102,9 @@ while (true) {
 
 	if ($lastPhase !== $status['BackupPhase']) {
 		switch ($status['BackupPhase']) {
+			case 'Starting':
+				echo '# Starting'.PHP_EOL;
+				break;
 			case 'PreparingSourceVolumes':
 				echo '# Preparing source volume'.PHP_EOL;
 				break;
@@ -130,6 +133,7 @@ while (true) {
 
 	if (array_key_exists('BackupPhase', $status)) {
 		switch ($status['BackupPhase']) {
+			case 'Starting':
 			case 'PreparingSourceVolumes':
 			case 'MountingBackupVol':
 				break;
